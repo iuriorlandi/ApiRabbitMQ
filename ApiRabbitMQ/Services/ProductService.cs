@@ -1,16 +1,21 @@
 ﻿using ApiRabbitMQ.Context;
 using ApiRabbitMQ.Models;
+using ApiRabbitMQ.RabbitMQ;
 
 namespace ApiRabbitMQ.Services
 {
-    public class ProductService(AppDbContext context) : IProductService
+    public class ProductService(AppDbContext context, IRabbitMQProducer rabbitMQProducer) : IProductService
     {
         private readonly AppDbContext _context = context;
+        private readonly IRabbitMQProducer _rabbitMQProducer = rabbitMQProducer;
 
         public Product AddProduct(Product product)
         {
             var result = _context.Products.Add(product);
             _context.SaveChanges();
+
+            _rabbitMQProducer.SendProductMessage(result.Entity);
+
             return result.Entity;
         }
 

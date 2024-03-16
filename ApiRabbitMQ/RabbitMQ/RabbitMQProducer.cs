@@ -16,7 +16,7 @@ namespace ApiRabbitMQ.RabbitMQ
             var queue = "product";
             var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
-            channel.QueueDeclare(queue, false);
+            channel.QueueDeclare(queue, false, false);
 
             var json = JsonSerializer.Serialize(message);
             var body = Encoding.UTF8.GetBytes(json);
